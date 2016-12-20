@@ -16,6 +16,10 @@ describe('Randomizer', ()=> {
 			random = Randomizer.create(seed);
 		});
 
+		it('should fail without seed', ()=> {
+			should(()=>Randomizer.create()).throwError();
+		});
+
 		it('should return defined value', ()=> {
 			should(random).be.ok();
 		});
@@ -24,6 +28,14 @@ describe('Randomizer', ()=> {
 
 			it('should return function', ()=> {
 				should(random.numbers(1, 10)).be.a.Function();
+			});
+
+			it('should fail with no arguments', ()=> {
+				should(()=>random.numbers()).throwError();
+			});
+
+			it('should fail with only 1 argument', ()=> {
+				should(()=>random.numbers(1)).throwError();
 			});
 
 			describe('sequence', ()=> {
@@ -197,6 +209,40 @@ describe('Randomizer', ()=> {
 				});
 			});
 
+			describe('from 0 to 2', ()=> {
+
+				var randomInteger;
+
+				beforeEach(()=> {
+					randomInteger = random.integers(0, 2);
+				});
+
+				describe('counts', ()=> {
+					var counts, numTrials;
+					beforeEach(()=> {
+						numTrials = 1000;
+						counts = {
+							0: 0,
+							1: 0,
+							2: 0
+						};
+						for (let i = 0; i < numTrials; i++) {
+							let x = randomInteger();
+							counts[x]++;
+						}
+					});
+
+					it('should have about the same amount of 0s as 1s', ()=> {
+						should(counts[0]).be.approximately(counts[1], numTrials / 10);
+					});
+
+					it('should have about the same amount of 1s as 2s', ()=> {
+						should(counts[1]).be.approximately(counts[2], numTrials / 10);
+					})
+				});
+
+			});
+
 		});
 
 		describe('.booleans', ()=> {
@@ -207,14 +253,15 @@ describe('Randomizer', ()=> {
 					randomBoolean = random.booleans();
 				});
 				describe('values', ()=> {
-					var values;
+					var values, numTrials;
 					beforeEach(()=> {
 						values = {
 							'true': 0,
 							'false': 0,
 							'other': 0
 						};
-						for (let i = 0; i < 1000; i++) {
+						numTrials = 1000;
+						for (let i = 0; i < numTrials; i++) {
 							let x = randomBoolean();
 							if (x === true) {
 								values['true']++;
@@ -235,6 +282,9 @@ describe('Randomizer', ()=> {
 					});
 					it('should never return value other than true or false', ()=> {
 						should(values['other']).equal(0);
+					});
+					it('should have about as many true and false', ()=>{
+						should(values['true']).be.approximately(values['false'], numTrials / 10);
 					});
 				});
 			});
@@ -289,6 +339,43 @@ describe('Randomizer', ()=> {
 				should(distinctSeeds.length).equal(n);
 			});
 		});
+
+		describe('.choices', ()=> {
+
+			describe('among a few possible states', ()=> {
+
+				var states, randomState;
+
+				beforeEach(()=> {
+					states = ['guest', 'member', 'vip'];
+					randomState = random.choices(states);
+				});
+
+				it('should return one of the possible states', ()=> {
+					for (let i = 0; i < 1000; i++) {
+						let x = randomState();
+						should(states).containEql(x);
+					}
+				});
+
+			});
+
+		});
+
+		/*
+		describe('.arrays', ()=>{
+
+			describe('of 10 numbers from 5 to 7', ()=>{
+
+				var randomArray;
+
+				beforeEach(()=>{
+
+				});
+
+			});
+		});
+		//*/
 
 	});
 
