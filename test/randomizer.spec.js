@@ -283,7 +283,7 @@ describe('Randomizer', ()=> {
 					it('should never return value other than true or false', ()=> {
 						should(values['other']).equal(0);
 					});
-					it('should have about as many true and false', ()=>{
+					it('should have about as many true and false', ()=> {
 						should(values['true']).be.approximately(values['false'], numTrials / 10);
 					});
 				});
@@ -362,20 +362,45 @@ describe('Randomizer', ()=> {
 
 		});
 
-		/*
-		describe('.arrays', ()=>{
+		describe('.arrays', ()=> {
 
-			describe('of 10 numbers from 5 to 7', ()=>{
+			describe('of 10 numbers from 5 to 7', ()=> {
 
-				var randomArray;
+				var randomArray, length;
 
-				beforeEach(()=>{
+				beforeEach(()=> {
+					length = 10;
+					randomArray = random.arrays(length, random.numbers(5, 7));
+				});
 
+				it('should be a function', ()=> {
+					should(randomArray).be.a.Function();
+				});
+
+				describe('value', ()=> {
+					var array;
+					beforeEach(()=> {
+						array = randomArray();
+					});
+					it('should be an array', ()=> {
+						should(array).be.an.Array();
+					});
+					it('should have correct length', ()=> {
+						should(array.length).equal(length);
+					});
+					it('should contain correct types of items', ()=> {
+						for (let item of array) {
+							should(item).be.a.Number();
+							should(item).not.be.lessThan(5);
+							should(item).be.lessThan(7);
+						}
+					});
 				});
 
 			});
+
+			// TODO test when first argument is a function
 		});
-		//*/
 
 	});
 
