@@ -9,10 +9,11 @@ describe('Randomizer', ()=> {
 
 	describe('.create', ()=> {
 
-		var random;
+		var random, seed;
 
 		beforeEach(()=> {
-			random = Randomizer.create('Example seed.');
+			seed = 'Example seed.';
+			random = Randomizer.create(seed);
 		});
 
 		it('should return defined value', ()=> {
@@ -29,11 +30,20 @@ describe('Randomizer', ()=> {
 
 				it('should return same value per seed', ()=> {
 					var randomNumber = random.numbers(1, 10);
-					var random2 = Randomizer.create('Example seed.');
+					var random2 = Randomizer.create(seed);
 					var randomNumber2 = random2.numbers(1, 10);
 					var x = randomNumber();
 					var x2 = randomNumber2();
 					should(x).equal(x2);
+				});
+
+				it('should return different value for different seeds', function () {
+					var randomNumber = random.numbers(1, 10);
+					var random2 = Randomizer.create(seed + 'x');
+					var randomNumber2 = random2.numbers(1, 10);
+					var x = randomNumber();
+					var x2 = randomNumber2();
+					should(x).not.equal(x2);
 				});
 
 			});
@@ -87,6 +97,37 @@ describe('Randomizer', ()=> {
 				it('should return value less than max', ()=> {
 					for (var i = 0; i < 1000; i++) {
 						should(randomNumber()).be.lessThan(max);
+					}
+				});
+
+			});
+
+			describe('from 0 to 100 by 7', ()=> {
+
+				var min, max, step, randomNumber;
+
+				beforeEach(()=> {
+					min = 0;
+					max = 100;
+					step = 7;
+					randomNumber = random.numbers(min, max, step);
+				});
+
+				it('should return value not less than min', ()=> {
+					for (var i = 0; i < 1000; i++) {
+						should(randomNumber()).not.be.lessThan(min);
+					}
+				});
+
+				it('should return value less than max', ()=> {
+					for (var i = 0; i < 1000; i++) {
+						should(randomNumber()).be.lessThan(max);
+					}
+				});
+
+				it('should return value divisible by interval', ()=> {
+					for (var i = 0; i < 1000; i++) {
+						should(randomNumber() % step).equal(0);
 					}
 				});
 
