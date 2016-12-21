@@ -38,6 +38,18 @@ describe('Randomizer', ()=> {
 				should(()=>random.numbers(1)).throwError();
 			});
 
+			it('should fail with invalid second argument', ()=> {
+				should(()=>random.numbers(1, 'awawa')).throwError();
+			});
+
+			it('should fail with no range', ()=> {
+				should(()=>random.numbers(1, 1)).throwError();
+			});
+
+			it('should fail with negative range', ()=> {
+				should(()=>random.numbers(5, 3)).throwError();
+			});
+
 			describe('sequence', ()=> {
 
 				it('should return same value per seed', ()=> {
@@ -314,6 +326,24 @@ describe('Randomizer', ()=> {
 				});
 			});
 
+			describe('with 3/4 bias towards true', ()=> {
+				var ratio, randomBoolean;
+				beforeEach(()=> {
+					ratio = 0.75;
+					randomBoolean = random.booleans(ratio);
+				});
+				it('should return true 3/4 of the time', ()=> {
+					let n = 1000, count0 = 0, count1 = 0;
+					for (let i = 0; i < n; i++) {
+						let x = randomBoolean();
+						if (x) {
+							count1++;
+						}
+					}
+					should(count1).be.approximately(n * ratio, n / 20);
+				});
+			});
+
 		});
 
 		describe('.seeds', ()=> {
@@ -399,7 +429,58 @@ describe('Randomizer', ()=> {
 
 			});
 
-			// TODO test when first argument is a function
+			describe('of random number of items', ()=> {
+
+				var minLength, maxLength, randomArray;
+
+				beforeEach(()=> {
+					minLength = 5;
+					maxLength = 7;
+					randomArray = random.arrays(random.integers(minLength, maxLength), random.booleans());
+				});
+
+				describe('returns', ()=> {
+					var array;
+					beforeEach(()=> {
+						array = randomArray();
+					});
+
+					it('should have length in correct range', ()=> {
+						should(array.length).not.be.lessThan(minLength);
+						should(array.length).not.be.greaterThan(maxLength);
+					});
+
+					it('should contain only booleans', ()=> {
+						for (let item of array) {
+							should(item).be.a.Boolean();
+						}
+					});
+				});
+
+			});
+
+			describe('of random numbers from 0 to 99', ()=> {
+
+				var random1, random2;
+
+				beforeEach(()=> {
+					let seed = 'Common test seed 159.';
+					random1 = Randomizer.create(seed);
+					random2 = Randomizer.create(seed);
+				});
+
+				it('should increment only once for a complex data structure', ()=> {
+					let randomNumber1 = random1.numbers(0, 99);
+					let randomNumber2 = random2.numbers(0, 99);
+					let randomArray1 = random1.arrays(2, randomNumber1);
+					let list1 = [randomNumber1(), randomArray1(), randomNumber1()];
+					let list2 = [randomNumber2(), randomNumber2(), randomNumber2()];
+					should(list1[0]).equal(list2[0]);
+					should(list1[2]).equal(list2[2]);
+				});
+
+			});
+
 		});
 
 	});
