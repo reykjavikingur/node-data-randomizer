@@ -483,6 +483,103 @@ describe('Randomizer', ()=> {
 
 		});
 
+		describe('.objects', ()=> {
+
+			describe('with 2 constant properties', ()=> {
+
+				var randomObject;
+
+				beforeEach(()=> {
+					randomObject = random.objects({
+						foo: 1,
+						bar: 'two'
+					});
+				});
+
+				it('should be a function', ()=> {
+					should(randomObject).be.a.Function();
+				});
+
+				describe('returns', ()=> {
+					var value;
+					beforeEach(()=> {
+						value = randomObject();
+					});
+					it('should be an Object', ()=> {
+						should(value).be.an.Object();
+					});
+					it('should have correct keys', ()=> {
+						should(Object.keys(value)).eql(['foo', 'bar']);
+					});
+				});
+
+			});
+
+			describe('with 2 dynamic properties', ()=> {
+
+				var minAge, maxAge, sexes, randomObject;
+
+				beforeEach(()=> {
+					minAge = 18;
+					maxAge = 34;
+					sexes = ['M', 'F'];
+					randomObject = random.objects({
+						age: random.integers(minAge, maxAge),
+						sex: random.choices(sexes)
+					});
+				});
+
+				describe('returns', ()=> {
+					var value;
+					beforeEach(()=> {
+						value = randomObject();
+					});
+					it('should have correct keys', ()=> {
+						should(Object.keys(value)).eql(['age', 'sex']);
+					});
+					it('should have integer for age property', ()=> {
+						should(value.age).be.a.Number();
+					});
+					it('should have string for sex property', ()=> {
+						should(value.sex).be.a.String();
+					});
+				});
+
+			});
+
+			describe('with 2 dynamic integer property', ()=> {
+
+				var random1, random2;
+
+				beforeEach(()=> {
+					let seed = 'Example object Seed~';
+					random1 = Randomizer.create(seed);
+					random2 = Randomizer.create(seed);
+					randomInteger1 = random1.integers(0, 99);
+
+					randomInteger2 = random2.integers(0, 99);
+
+					randomObject1 = random1.objects({
+						foo: random.integers(0, 99),
+						bar: random.integers(0, 99)
+					});
+				});
+
+				it('should increment random sequence the same regardless of object groupings', ()=> {
+					let x1 = randomInteger1();
+					let y1 = randomObject1();
+					let z1 = randomInteger1();
+					let x2 = randomInteger2();
+					let y2 = randomInteger2();
+					let z2 = randomInteger2();
+					should(x1).equal(x2);
+					should(z1).equal(z2);
+				});
+
+			});
+
+		});
+
 	});
 
 });
