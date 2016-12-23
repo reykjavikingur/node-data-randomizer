@@ -582,6 +582,14 @@ describe('Randomizer', ()=> {
 
 		describe('.phrases', ()=> {
 
+			it('should throw error without word count', ()=>{
+				should(()=>random.phrases()).throw();
+			});
+
+			it('should throw error given invalid word count', ()=>{
+				should(()=>random.phrases('t')).throw();
+			});
+
 			describe('with constant word count', ()=> {
 
 				var randomPhrase, wordCount;
@@ -743,6 +751,10 @@ describe('Randomizer', ()=> {
 					should(a).equal(b);
 				});
 			});
+
+		});
+
+		describe('.dates', ()=>{
 
 		});
 
