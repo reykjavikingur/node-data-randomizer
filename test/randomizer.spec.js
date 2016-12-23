@@ -864,6 +864,35 @@ describe('Randomizer', ()=> {
 
 			});
 
+			describe('grouping', ()=> {
+
+				it('should create new seed', ()=> {
+					let seed = 'transformations grouping test';
+					let randomA = Randomizer.create(seed);
+					let randomB = Randomizer.create(seed);
+					let randomNumberA = randomA.numbers(0, 1);
+					let randomNumberB = randomB.numbers(0, 1);
+					let randomThingA = randomA.transformations([
+						randomA.numbers(1, 2),
+						randomA.numbers(3, 4)
+					], (x, y) => {
+						return {x: x, y: y};
+					});
+
+					randomNumberA();
+					randomNumberB();
+
+					randomThingA();
+					randomNumberB();
+
+					let a = randomNumberA();
+					let b = randomNumberB();
+
+					should(a).equal(b);
+				});
+
+			});
+
 		});
 
 	});
