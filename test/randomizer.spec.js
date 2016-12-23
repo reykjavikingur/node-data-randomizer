@@ -582,11 +582,11 @@ describe('Randomizer', ()=> {
 
 		describe('.phrases', ()=> {
 
-			it('should throw error without word count', ()=>{
+			it('should throw error without word count', ()=> {
 				should(()=>random.phrases()).throw();
 			});
 
-			it('should throw error given invalid word count', ()=>{
+			it('should throw error given invalid word count', ()=> {
 				should(()=>random.phrases('t')).throw();
 			});
 
@@ -754,7 +754,55 @@ describe('Randomizer', ()=> {
 
 		});
 
-		describe('.dates', ()=>{
+		describe('.dates', ()=> {
+
+			it('should throw error if given zero arguments', ()=> {
+				should(()=>random.dates()).throw();
+			});
+
+			it('should throw error if given one argument', ()=> {
+				should(()=>random.dates(new Date(1e12))).throw();
+			});
+
+			it('should throw error if given two arguments with an invalid value', ()=> {
+				should(()=>random.dates('t', 'u')).throw();
+			});
+
+			it('should throw error if given two valid arguments with negative range', ()=> {
+				should(()=>random.dates(new Date(1.1e12), new Date(1e12))).throw();
+			});
+
+			describe('in certain date range', ()=> {
+
+				var min, max, randomDate;
+
+				beforeEach(()=> {
+					min = 1e12;
+					max = 1.1e12;
+					let minDate = new Date(min);
+					let maxDate = new Date(max);
+					randomDate = random.dates(minDate, maxDate);
+				});
+
+				it('should return a function', ()=> {
+					should(randomDate).be.a.Function();
+				});
+
+				it('should generate Date instances', ()=> {
+					let date = randomDate();
+					should(date).be.instanceOf(Date);
+				});
+
+				it('should always generate Date within range', ()=> {
+					for (let i = 0; i < 1000; i++) {
+						let d = randomDate();
+						let n = Number(d);
+						should(n).not.be.lessThan(min);
+						should(n).not.be.greaterThan(max);
+					}
+				});
+
+			});
 
 		});
 
