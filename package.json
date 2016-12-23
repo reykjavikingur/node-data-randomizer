@@ -32,6 +32,7 @@
     "should": "^11.1.2"
   },
   "dependencies": {
+    "lorem-ipsum": "^1.0.3",
     "random-seed": "^0.3.0"
   }
 }

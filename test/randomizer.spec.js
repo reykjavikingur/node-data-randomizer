@@ -580,6 +580,172 @@ describe('Randomizer', ()=> {
 
 		});
 
+		describe('.phrases', ()=> {
+
+			describe('with constant word count', ()=> {
+
+				var randomPhrase, wordCount;
+
+				beforeEach(()=> {
+					wordCount = 3;
+					randomPhrase = random.phrases(wordCount);
+				});
+
+				it('should return a function', ()=> {
+					should(randomPhrase).be.a.Function();
+				});
+
+				it('should return a string', ()=> {
+					should(randomPhrase()).be.a.String();
+				});
+
+				it('should have correct word count', ()=> {
+					var phrase = randomPhrase();
+					var words = phrase.split(' ');
+					should(words.length).equal(wordCount);
+				});
+
+				it('should return different value each time', ()=> {
+					var x1 = randomPhrase();
+					var x2 = randomPhrase();
+					should(x1).not.eql(x2);
+				});
+
+			});
+
+			describe('grouping', ()=> {
+
+				it('should use separate seed for phrase', ()=> {
+					var seed = 'Phrase grouping test';
+					var randomA = new Randomizer(seed);
+					var randomB = new Randomizer(seed);
+					var randomNumberA = randomA.numbers(0, 1);
+					var listA = [
+						randomNumberA(),
+						randomNumberA()
+					];
+					var randomNumberB = randomB.numbers(0, 1);
+					var randomPhraseB = randomB.phrases(3);
+					var listB = [
+						randomPhraseB(),
+						randomNumberB()
+					];
+					should(listA[1]).equal(listB[1]);
+				});
+			});
+
+			describe('with dynamic word count', ()=> {
+				var minWordCount, maxWordCount, randomPhrase;
+				beforeEach(()=> {
+					minWordCount = 3;
+					maxWordCount = 5;
+					randomPhrase = random.phrases(random.integers(minWordCount, maxWordCount));
+				});
+				it('should return string', ()=> {
+					should(randomPhrase()).be.a.String();
+				});
+				it('should always return string in calculated word count range', ()=> {
+					for (let i = 0; i < 1000; i++) {
+						var phrase = randomPhrase();
+						var words = phrase.split(' ');
+						should(words.length).be.greaterThan(minWordCount - 1);
+						should(words.length).be.lessThan(maxWordCount + 1);
+					}
+				});
+			});
+
+		});
+
+		describe('.sentences', ()=> {
+
+			var randomSentence;
+			beforeEach(()=> {
+				randomSentence = random.sentences();
+			});
+
+			it('should return function', ()=> {
+				should(randomSentence).be.a.Function();
+			});
+
+			it('should generate strings', ()=> {
+				let sentence = randomSentence();
+				should(sentence).be.a.String();
+			});
+
+			it('should generate non-empty strings', ()=> {
+				should(randomSentence()).be.ok();
+			});
+
+			it('should generate different strings each time', ()=> {
+				should(randomSentence()).not.equal(randomSentence());
+			});
+
+			describe('grouping', ()=> {
+				it('should use different seed for each sentence', ()=> {
+					let seed = 'abcd';
+					let randomA = Randomizer.create(seed);
+					let randomB = Randomizer.create(seed);
+					let randomNumberA = randomA.numbers(0, 1);
+					let randomNumberB = randomB.numbers(0, 1);
+					let randomSentenceA = randomA.sentences();
+					randomSentenceA();
+					randomNumberB();
+					let a = randomNumberA();
+					let b = randomNumberB();
+					should(a).equal(b);
+				});
+			});
+
+		});
+
+		describe('.paragraphs', ()=> {
+
+			var randomParagraph;
+			beforeEach(()=> {
+				randomParagraph = random.paragraphs();
+			});
+
+			it('should return function', ()=> {
+				should(randomParagraph).be.a.Function();
+			});
+
+			it('should generate strings', ()=> {
+				let paragraph = randomParagraph();
+				should(paragraph).be.a.String();
+			});
+
+			it('should generate non-empty strings', ()=> {
+				should(randomParagraph()).be.ok();
+			});
+
+			it('should generate different strings each time', ()=> {
+				should(randomParagraph()).not.equal(randomParagraph());
+			});
+
+			it('should generate multiple sentences', ()=> {
+				let p = randomParagraph();
+				let sentences = p.split('. ');
+				should(sentences.length).be.greaterThan(1);
+			});
+
+			describe('grouping', ()=> {
+				it('should use different seed for each paragraph', ()=> {
+					let seed = 'abcd';
+					let randomA = Randomizer.create(seed);
+					let randomB = Randomizer.create(seed);
+					let randomNumberA = randomA.numbers(0, 1);
+					let randomNumberB = randomB.numbers(0, 1);
+					let randomParagraphA = randomA.paragraphs();
+					randomParagraphA();
+					randomNumberB();
+					let a = randomNumberA();
+					let b = randomNumberB();
+					should(a).equal(b);
+				});
+			});
+
+		});
+
 	});
 
 });
