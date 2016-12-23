@@ -966,6 +966,200 @@ describe('Randomizer', ()=> {
 
 		});
 
+		describe('.composites', ()=> {
+
+			it('should fail when given no arguments', ()=> {
+				should(()=>random.composites()).throw();
+			});
+
+			it('should fail when first argument is invalid-falsy', ()=> {
+				should(()=>random.composites(null, 3, 'children', {})).throw();
+			});
+
+			it('should fail when second argument is invalid', ()=> {
+				should(()=>random.composites(2, null, 'children', {})).throw();
+			});
+
+			it('should fail when third argument is falsy', ()=> {
+				should(()=>random.composites(2, 3, null, {})).throw();
+			});
+
+			it('should fail when fourth argument is not an object', ()=> {
+				should(()=>random.composites(2, 3, 'children', null)).throw();
+			});
+
+			describe('with branch count 0 and max depth greater than 0', ()=> {
+
+				var randomComposite;
+
+				beforeEach(()=> {
+					randomComposite = random.composites(0, 3, 'children', {
+						id: random.integers(1, 10000)
+					});
+				});
+
+				describe('return', ()=> {
+					var result;
+					beforeEach(()=> {
+						result = randomComposite();
+					});
+					it('should be defined', ()=> {
+						should(result).be.ok();
+					});
+					it('should have appropriate id', ()=> {
+						should(result.id).be.greaterThan(0);
+						should(result.id).be.lessThan(10001);
+					});
+					it('should have empty list of children', ()=> {
+						should(result.children).eql([]);
+					});
+				});
+
+			});
+
+			describe('with branch count greater than 0 and max depth 0', ()=> {
+
+				var randomComposite;
+
+				beforeEach(()=> {
+					randomComposite = random.composites(2, 0, 'children', {
+						id: random.integers(1, 10000)
+					});
+				});
+
+				describe('result', ()=> {
+					var result;
+					beforeEach(()=> {
+						result = randomComposite();
+					});
+					it('should be ok', ()=> {
+						should(result).be.ok();
+					});
+					it('should have appropriate id', ()=> {
+						should(result.id).be.a.Number();
+					});
+					it('should have empty list of children', ()=> {
+						should(result.children).eql([]);
+					});
+				});
+
+			});
+
+			describe('with dynamic branch count and constant max depth', ()=> {
+
+				var randomComposite, minBranchCount, maxBranchCount, maxDepth;
+
+				beforeEach(()=> {
+					minBranchCount = 2;
+					maxBranchCount = 3;
+					let branchCount = random.integers(minBranchCount, maxBranchCount);
+					maxDepth = 3;
+					randomComposite = random.composites(branchCount, maxDepth, 'children', {
+						id: random.integers(1, 10000)
+					});
+				});
+
+				it('should be a function', ()=> {
+					should(randomComposite).be.a.Function();
+				});
+
+				describe('returns', ()=> {
+					var result;
+					beforeEach(()=> {
+						result = randomComposite();
+					});
+					it('should be defined', ()=> {
+						should(result).be.ok();
+					});
+					it('should have id', ()=> {
+						should(result.id).be.a.Number();
+					});
+					it('should have children', ()=> {
+						should(result.children).be.an.Array();
+					});
+					it('should have correct number of children', ()=> {
+						should(result.children.length).be.greaterThan(minBranchCount - 1);
+						should(result.children.length).be.lessThan(minBranchCount + 1);
+					});
+					it('should have correct structure', ()=> {
+						testComposite(result, 0);
+					});
+				});
+
+				function testComposite(value, depth) {
+					should(value.id).be.a.Number();
+					should(value.children).be.an.Array();
+					if (depth < maxDepth) {
+						let numChildren = value.children.length;
+						should(numChildren).be.greaterThan(minBranchCount - 1);
+						should(numChildren).be.lessThan(maxBranchCount + 1);
+						for (let i = 0; i < numChildren; i++) {
+							testComposite(value.children[i], depth + 1);
+						}
+					}
+					else {
+						should(value.children.length).equal(0);
+					}
+				}
+
+			});
+
+			describe('with constant branch count and constant max depth', ()=> {
+
+				var randomComposite, branchCount, maxDepth;
+
+				beforeEach(()=> {
+					branchCount = 2;
+					maxDepth = 3;
+					randomComposite = random.composites(branchCount, maxDepth, 'children', {
+						id: random.integers(1, 10000)
+					});
+				});
+
+				it('should be a function', ()=> {
+					should(randomComposite).be.a.Function();
+				});
+
+				describe('returns', ()=> {
+					var result;
+					beforeEach(()=> {
+						result = randomComposite();
+					});
+					it('should be defined', ()=> {
+						should(result).be.ok();
+					});
+					it('should have id', ()=> {
+						should(result.id).be.a.Number();
+					});
+					it('should have children', ()=> {
+						should(result.children).be.an.Array();
+					});
+					it('should have correct number of children', ()=> {
+						should(result.children.length).equal(branchCount);
+					});
+					it('should have correct structure', ()=> {
+						testComposite(result, 0);
+					});
+				});
+
+				function testComposite(value, depth) {
+					should(value.id).be.a.Number();
+					should(value.children).be.an.Array();
+					if (depth < maxDepth) {
+						let numChildren = value.children.length;
+						should(numChildren).equal(branchCount);
+						for (let i = 0; i < numChildren; i++) {
+							testComposite(value.children[i], depth + 1);
+						}
+					}
+					else {
+						should(value.children.length).equal(0);
+					}
+				}
+
+			});
+
+		});
 	});
 
 });
