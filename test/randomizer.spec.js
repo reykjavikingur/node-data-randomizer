@@ -806,6 +806,66 @@ describe('Randomizer', ()=> {
 
 		});
 
+		describe('.transformations', ()=> {
+
+			it('should fail when given no arguments', ()=> {
+				should(()=>random.transformations()).throw();
+			});
+
+			it('should fail when given one valid argument', ()=> {
+				let facs = [
+					()=> {
+					}
+				];
+				should(()=>random.transformations(facs)).throw();
+			});
+
+			it('should fail when first argument contains non-function', ()=> {
+				let facs = [1];
+				let f = (x)=> {
+					return x
+				};
+				should(()=>random.transformations(facs, f)).throw();
+			});
+
+			describe('with 2 random arguments', ()=> {
+
+				var randomTransformation;
+
+				beforeEach(()=> {
+					randomTransformation = random.transformations([
+						random.numbers(1, 2),
+						random.numbers(3, 4)
+					], (x, y) => {
+						return {
+							x: x,
+							y: y
+						};
+					})
+				});
+
+				it('should be a function', ()=> {
+					should(randomTransformation).be.a.Function();
+				});
+
+				it('should always return appropriate value', ()=> {
+					for (let i = 0; i < 1000; i++) {
+						let r = randomTransformation();
+						should(r.hasOwnProperty('x'));
+						should(r.hasOwnProperty('y'));
+						should(r.x).be.a.Number();
+						should(r.y).be.a.Number();
+						should(r.x).not.be.lessThan(1);
+						should(r.x).be.lessThan(2);
+						should(r.y).not.be.lessThan(3);
+						should(r.y).be.lessThan(4);
+					}
+				});
+
+			});
+
+		});
+
 	});
 
 });
