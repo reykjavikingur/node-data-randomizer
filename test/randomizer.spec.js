@@ -392,6 +392,77 @@ describe('Randomizer', ()=> {
 
 		});
 
+		describe('.alternatives', ()=> {
+
+			describe('with two random functions', ()=> {
+
+				var randomAlt, minInteger, maxInteger, choices;
+
+				beforeEach(()=> {
+					minInteger = 0;
+					maxInteger = 9;
+					choices = 'abcdef'.split('');
+					let randomInteger = random.integers(minInteger, maxInteger);
+					let randomLetter = random.choices(choices);
+					randomAlt = random.alternatives([randomInteger, randomLetter]);
+				});
+
+				it('should be a function', ()=> {
+					should(randomAlt).be.a.Function();
+				});
+
+				it('should return appropriate values', ()=> {
+					for (let i = 0; i < 1000; i++) {
+						let r = randomAlt();
+						let validValues = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 'a', 'b', 'c', 'd', 'e', 'f'];
+						should(validValues).containEql(r);
+					}
+				});
+
+				it('should alternate evenly', ()=> {
+					let numIntegers = 0, numLetters = 0;
+					let n = 1000;
+					for (let i = 0; i < n; i++) {
+						let r = randomAlt();
+						if (typeof r === 'number') {
+							numIntegers++;
+						}
+						if (typeof r === 'string') {
+							numLetters++;
+						}
+					}
+					should(numIntegers).be.approximately(numLetters, n / 10);
+				});
+
+			});
+
+			describe('grouping', ()=> {
+				it('should create new seed', ()=> {
+					let seed = 'unit testing seed for grouping alternatives';
+					let randomA = Randomizer.create(seed);
+					let randomB = Randomizer.create(seed);
+					let randomNumberA = randomA.numbers(0, 1);
+					let randomNumberB = randomB.numbers(0, 1);
+					let randomThingA = randomA.alternatives([
+						randomA.numbers(100, 200),
+						randomA.numbers(300, 400)
+					]);
+
+					randomNumberA();
+					randomNumberB();
+
+					randomThingA();
+					randomNumberB();
+
+					let a = randomNumberA();
+					let b = randomNumberB();
+
+					should(a).equal(b);
+				});
+			});
+
+		});
+
 		describe('.arrays', ()=> {
 
 			describe('of 10 numbers from 5 to 7', ()=> {
