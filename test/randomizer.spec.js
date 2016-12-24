@@ -1,5 +1,5 @@
 var should = require('should');
-var Randomizer = require('../lib/randomizer');
+var Randomizer = require('../');
 
 describe('Randomizer', ()=> {
 
@@ -1101,6 +1101,46 @@ describe('Randomizer', ()=> {
 						should(value.children.length).equal(0);
 					}
 				}
+
+			});
+
+			describe.skip('with constant branch count and ranged max depth', () => {
+
+				var randomComposite, branchCount, minDepth, maxDepth;
+
+				beforeEach(()=> {
+					branchCount = 2;
+					minDepth = 3;
+					maxDepth = 5;
+					randomComposite = random.composites(branchCount, random.integers(minDepth, maxDepth), 'children', {});
+				});
+
+				it('should be a function', ()=> {
+					should(randomComposite).be.a.Function();
+				});
+
+				describe('returns', ()=> {
+
+					var result;
+
+					beforeEach(()=> {
+						result = randomComposite();
+					});
+
+					it('should be defined', ()=> {
+						should(result).be.ok();
+					});
+
+					it('should have children array', ()=> {
+						should(result.children).be.an.Array();
+					});
+
+					it.skip('should have appropriate number of children', ()=> {
+						should(result.children.length).be.greaterThan(minDepth - 1);
+						should(result.children.length).be.lessThan(maxDepth + 1);
+					});
+
+				});
 
 			});
 
