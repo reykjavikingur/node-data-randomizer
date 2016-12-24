@@ -1362,7 +1362,7 @@ describe('Randomizer', ()=> {
 
 			});
 
-			describe('with dynamic branch count and constant max depth', ()=> {
+			describe('with dynamic branch count and constant depth', ()=> {
 
 				var randomComposite, minBranchCount, maxBranchCount, maxDepth;
 
@@ -1380,7 +1380,7 @@ describe('Randomizer', ()=> {
 					should(randomComposite).be.a.Function();
 				});
 
-				describe('returns', ()=> {
+				describe('return value', ()=> {
 					var result;
 					beforeEach(()=> {
 						result = randomComposite();
@@ -1396,7 +1396,7 @@ describe('Randomizer', ()=> {
 					});
 					it('should have correct number of children', ()=> {
 						should(result.children.length).be.greaterThan(minBranchCount - 1);
-						should(result.children.length).be.lessThan(minBranchCount + 1);
+						should(result.children.length).be.lessThan(maxBranchCount + 1);
 					});
 					it('should have correct structure', ()=> {
 						testComposite(result, 0);
@@ -1436,7 +1436,7 @@ describe('Randomizer', ()=> {
 					should(randomComposite).be.a.Function();
 				});
 
-				describe('returns', ()=> {
+				describe('return value', ()=> {
 
 					var result;
 
