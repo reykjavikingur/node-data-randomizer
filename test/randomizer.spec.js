@@ -266,6 +266,53 @@ describe('Randomizer', ()=> {
 
 		describe('.integers', ()=> {
 
+			describe('when min and max are the same', ()=> {
+
+				var m, randomInteger;
+
+				beforeEach(()=> {
+					m = 3;
+					randomInteger = random.integers(m, m);
+				});
+
+				it('should be a function', ()=> {
+					should(randomInteger).be.a.Function();
+				});
+
+				it('should always return appropriate values', ()=> {
+					for (let i = 0; i < 1000; i++) {
+						let x = randomInteger();
+						should(x).equal(m);
+					}
+				});
+
+				describe('.shift', ()=> {
+
+					describe('with offset -1', ()=> {
+
+						it('should always return appropriate values', ()=> {
+							let shiftedRandomInteger = randomInteger.shift(-1);
+							for (let i = 0; i < 1000; i++) {
+								let x = shiftedRandomInteger();
+								should(x).equal(m - 1);
+							}
+						});
+
+					});
+
+					describe('with offset and limit reaching out of range', ()=> {
+
+						it('should return null', ()=> {
+							let shiftedRandomInteger = randomInteger.shift(-1, m);
+							should(shiftedRandomInteger).not.be.ok();
+						});
+
+					});
+
+				})
+
+			});
+
 			describe('from 0 to 1', ()=> {
 
 				var randomInteger;
@@ -1203,7 +1250,7 @@ describe('Randomizer', ()=> {
 					should(a).equal(b);
 				});
 
-				it('should create new seed even when random factory is called in transform function', ()=>{
+				it('should create new seed even when random factory is called in transform function', ()=> {
 					let seed = 'transformations grouping test';
 					let randomA = Randomizer.create(seed);
 					let randomB = Randomizer.create(seed);
