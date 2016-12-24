@@ -891,12 +891,38 @@ describe('Randomizer', ()=> {
 				should(()=>random.transformations(facs)).throw();
 			});
 
-			it('should fail when first argument contains non-function', ()=> {
-				let facs = [1];
-				let f = (x)=> {
-					return x
-				};
-				should(()=>random.transformations(facs, f)).throw();
+			describe('with one non-random argument', ()=> {
+
+				var randomTransformation;
+
+				beforeEach(()=> {
+					randomTransformation = random.transformations([
+						1.5
+					], (x) => {
+						return {x: x};
+					});
+				});
+
+				it('should be a function', ()=> {
+					should(randomTransformation).be.a.Function();
+				});
+
+				describe('return', ()=> {
+
+					var result;
+
+					beforeEach(()=> {
+						result = randomTransformation();
+					});
+
+					it('should have been transformed', ()=> {
+						should(result).eql({
+							x: 1.5
+						});
+					});
+
+				});
+
 			});
 
 			describe('with 2 random arguments', ()=> {
