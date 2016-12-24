@@ -1345,7 +1345,7 @@ describe('Randomizer', ()=> {
 
 			});
 
-			describe.skip('with constant branch count and ranged max depth', () => {
+			describe('with constant branch count and ranged max depth', () => {
 
 				var randomComposite, branchCount, minDepth, maxDepth;
 
@@ -1377,8 +1377,7 @@ describe('Randomizer', ()=> {
 					});
 
 					it.skip('should have appropriate number of children', ()=> {
-						should(result.children.length).be.greaterThan(minDepth - 1);
-						should(result.children.length).be.lessThan(maxDepth + 1);
+						should(result.children.length).equal(2);
 					});
 
 				});

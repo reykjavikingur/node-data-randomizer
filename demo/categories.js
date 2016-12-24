@@ -1,6 +1,8 @@
-let random = require('../').create('categories seed 7');
+let random = require('../').create('categories seed 9');
 
-var randomCategory = random.composites(random.integers(2, 3), 3, 'subCategories', {
+let branchCount = random.integers(2, 3);
+let depth = random.integers(2, 4);
+var randomCategory = random.composites(branchCount, depth, 'subCategories', {
 	id: random.integers(10000, 20000),
 	name: random.phrases(random.integers(3, 6))
 });
