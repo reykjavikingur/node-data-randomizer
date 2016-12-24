@@ -157,6 +157,111 @@ describe('Randomizer', ()=> {
 
 			});
 
+			describe('from 3 to 5', ()=> {
+
+				var min, max, randomNumber;
+
+				beforeEach(()=> {
+					min = 3;
+					max = 5;
+					randomNumber = random.numbers(min, max);
+				});
+
+				it('should always return a value in range', ()=> {
+					for (let i = 0; i < 1000; i++) {
+						let x = randomNumber();
+						should(x).not.be.lessThan(min);
+						should(x).be.lessThan(max);
+					}
+				});
+
+				describe('.shift', ()=> {
+
+					describe('with positive offset', ()=> {
+
+						var offset, shiftedRandomNumber;
+
+						before(()=> {
+							offset = 1;
+							shiftedRandomNumber = randomNumber.shift(offset);
+						});
+
+						it('should be a function', ()=> {
+							should(shiftedRandomNumber).be.a.Function();
+						});
+
+						it('should return values in new range', ()=> {
+							for (let i = 0; i < 1000; i++) {
+								let x = shiftedRandomNumber();
+								should(x).not.be.lessThan(min + offset);
+								should(x).be.lessThan(max + offset);
+							}
+						});
+
+					});
+
+					describe('with positive offset and limit not affecting range', ()=> {
+
+						var offset, limit, shiftedRandomNumber;
+
+						beforeEach(()=> {
+							offset = 1;
+							limit = 10;
+							shiftedRandomNumber = randomNumber.shift(offset, limit);
+						});
+
+						it('should return values in new range', ()=> {
+							for (let i = 0; i < 1000; i++) {
+								let x = shiftedRandomNumber();
+								should(x).not.be.lessThan(min + offset);
+								should(x).be.lessThan(max + offset);
+							}
+						});
+
+					});
+
+					describe('with positive offset and limit partly affecting range', ()=> {
+
+						var offset, limit, shiftedRandomNumber;
+
+						beforeEach(()=> {
+							offset = 1;
+							should(max - min).be.greaterThan(offset); // sanity check
+							limit = max;
+							shiftedRandomNumber = randomNumber.shift(offset, limit);
+						});
+
+						it('should return values in new range', ()=> {
+							for (let i = 0; i < 1000; i++) {
+								let x = shiftedRandomNumber();
+								should(x).not.be.lessThan(min + offset);
+								should(x).be.lessThan(Math.min(max + offset, limit));
+							}
+						});
+
+					});
+
+					describe('with positive offset and limit completely exceeding range', ()=> {
+
+						var offset, limit, shiftedRandomNumber;
+
+						beforeEach(()=> {
+							offset = 10;
+							limit = 6;
+							should(min + offset).be.greaterThan(limit); // sanity check
+							shiftedRandomNumber = randomNumber.shift(offset, limit);
+						});
+
+						it('should not be defined', ()=> {
+							should(shiftedRandomNumber).not.be.ok();
+						});
+
+					});
+
+				});
+
+			});
+
 		});
 
 		describe('.integers', ()=> {
@@ -254,6 +359,116 @@ describe('Randomizer', ()=> {
 				});
 
 			});
+
+			describe('from 3 to 5', ()=> {
+
+				var min, max, randomInteger;
+
+				beforeEach(()=> {
+					min = 3;
+					max = 5;
+					randomInteger = random.integers(min, max);
+				});
+
+				describe('.shift', ()=> {
+
+					describe('by -1 towards 0', ()=> {
+
+						var offset, limit, shiftedRandomInteger;
+
+						beforeEach(()=> {
+							offset = -1;
+							limit = 0;
+							shiftedRandomInteger = randomInteger.shift(-1, 0);
+						});
+
+						it('should be a function', ()=> {
+							should(shiftedRandomInteger).be.a.Function();
+						});
+
+						it('should always return a value in appropriate range', ()=> {
+							let values = [2, 3, 4];
+							for (let i = 0; i < 1000; i++) {
+								let x = shiftedRandomInteger();
+								should(values).containEql(x);
+							}
+						});
+
+						describe('range of values', ()=> {
+							var counts, n;
+							beforeEach(()=> {
+								n = 1000;
+								counts = {};
+								for (let i = 0; i < n; i++) {
+									let x = shiftedRandomInteger();
+									if (!counts.hasOwnProperty(x)) {
+										counts[x] = 0;
+									}
+									counts[x]++;
+								}
+							});
+
+							it('should have about same amount of each value', ()=> {
+								console.log('counts', counts);
+								let first = counts[Object.keys(counts)[0]];
+								for (let i in counts) {
+									should(counts[i]).be.approximately(first, n / 5);
+								}
+							});
+
+						});
+
+					});
+
+					describe('by -4 to 0', ()=> {
+
+						var offset, limit, shiftedRandomInteger;
+
+						beforeEach(()=> {
+							offset = -4;
+							limit = 0;
+							shiftedRandomInteger = randomInteger.shift(offset, limit);
+						});
+
+						it('should return within expected range', ()=> {
+							let values = [0, 1];
+							for (let i = 0; i < 1000; i++) {
+								let x = shiftedRandomInteger();
+								should(values).containEql(x);
+							}
+						});
+
+						it('should cover expected range', ()=> {
+							let counts = {0: 0, 1: 0};
+							let n = 1000;
+							for (let i = 0; i < n; i++) {
+								let x = shiftedRandomInteger();
+								counts[x]++;
+							}
+							should(counts[0]).be.approximately(counts[1], n / 5);
+						});
+
+					});
+
+					describe('by -5 to 0', ()=> {
+
+						var offset, limit, shiftedRandomInteger;
+
+						beforeEach(()=> {
+							offset = -5;
+							limit = 0;
+							shiftedRandomInteger = randomInteger.shift(offset, limit);
+						});
+
+						it('should not be defined', ()=> {
+							should(shiftedRandomInteger).not.be.ok();
+						});
+
+					});
+
+				});
+
+			})
 
 		});
 
@@ -1226,6 +1441,7 @@ describe('Randomizer', ()=> {
 			});
 
 		});
+
 	});
 
 });
