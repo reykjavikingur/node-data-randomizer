@@ -1203,6 +1203,35 @@ describe('Randomizer', ()=> {
 					should(a).equal(b);
 				});
 
+				it('should create new seed even when random factory is called in transform function', ()=>{
+					let seed = 'transformations grouping test';
+					let randomA = Randomizer.create(seed);
+					let randomB = Randomizer.create(seed);
+					let randomNumberA = randomA.numbers(0, 1);
+					let randomNumberB = randomB.numbers(0, 1);
+					let randomThingA = randomA.transformations([
+						randomA.numbers(1, 2),
+						randomA.numbers(3, 4)
+					], (x, y) => {
+						return {
+							x: x,
+							y: y,
+							z: randomNumberA()
+						};
+					});
+
+					randomNumberA();
+					randomNumberB();
+
+					randomThingA();
+					randomNumberB();
+
+					let a = randomNumberA();
+					let b = randomNumberB();
+
+					should(a).equal(b);
+				});
+
 			});
 
 		});
@@ -1376,7 +1405,7 @@ describe('Randomizer', ()=> {
 						should(result.children).be.an.Array();
 					});
 
-					it.skip('should have appropriate number of children', ()=> {
+					it('should have appropriate number of children', ()=> {
 						should(result.children.length).equal(2);
 					});
 
@@ -1436,6 +1465,33 @@ describe('Randomizer', ()=> {
 						should(value.children.length).equal(0);
 					}
 				}
+
+			});
+
+			describe('grouping', ()=> {
+
+				it('should create new seed', ()=> {
+					let seed = 'composite grouping test';
+					let randomA = Randomizer.create(seed);
+					let randomB = Randomizer.create(seed);
+					let randomNumberA = randomA.numbers(0, 1);
+					let randomNumberB = randomB.numbers(0, 1);
+					let randomCompositeA = randomA.composites(randomA.integers(2, 4), randomA.integers(2, 7), 'children', {
+						id: random.integers(10000, 20000),
+						name: random.phrases(random.integers(2, 6))
+					});
+
+					randomNumberA();
+					randomNumberB();
+
+					randomCompositeA();
+					randomNumberB();
+
+					let a = randomNumberA();
+					let b = randomNumberB();
+
+					should(a).equal(b);
+				});
 
 			});
 
