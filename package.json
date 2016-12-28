@@ -1,7 +1,7 @@
 {
-  "name": "fpo-random",
+  "name": "data-randomizer",
   "version": "1.0.0",
-  "description": "Pseudo-random data generator to create placeholder content in data-driven functional proofs-of-concept or design prototypes",
+  "description": "Pseudo-random recursive data generator to create placeholder content in data-driven functional proofs-of-concept or design prototypes",
   "main": "index.js",
   "scripts": {
     "test": "mocha"
