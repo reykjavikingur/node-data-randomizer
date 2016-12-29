@@ -1,6 +1,6 @@
 {
   "name": "data-randomizer",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Pseudo-random recursive data generator to create placeholder content in data-driven functional proofs-of-concept or design prototypes",
   "main": "index.js",
   "scripts": {
