@@ -954,6 +954,24 @@ describe('Randomizer', ()=> {
 
 			});
 
+			describe('pseudo-randomness', ()=> {
+
+				var random1, random2, randomPhrase1, randomPhrase2;
+
+				beforeEach(()=> {
+					let seed = 'phrases seed 1020';
+					random1 = Randomizer.create(seed);
+					random2 = Randomizer.create(seed);
+					randomPhrase1 = random1.phrases(3);
+					randomPhrase2 = random2.phrases(3);
+				});
+
+				it('should be consistent on the first time', ()=> {
+					should(randomPhrase1()).eql(randomPhrase2());
+				});
+
+			});
+
 			describe('grouping', ()=> {
 
 				it('should use separate seed for phrase', ()=> {
@@ -1037,6 +1055,22 @@ describe('Randomizer', ()=> {
 				});
 			});
 
+			describe('pseudo-randomness', ()=> {
+
+				it('should be consistent', ()=> {
+					let seed = 'sentence test seed';
+					let random1 = Randomizer.create(seed);
+					let random2 = Randomizer.create(seed);
+					let randomSentence1 = random1.sentences();
+					let randomSentence2 = random2.sentences();
+					let s1 = randomSentence1();
+					let s2 = randomSentence2();
+					should(s1).be.ok();
+					should(s1).equal(s2);
+				});
+
+			});
+
 		});
 
 		describe('.paragraphs', ()=> {
@@ -1083,6 +1117,22 @@ describe('Randomizer', ()=> {
 					let b = randomNumberB();
 					should(a).equal(b);
 				});
+			});
+
+			describe('pseudo-randomness', ()=> {
+
+				it('should be consistent', ()=> {
+					let seed = 'sentence test seed';
+					let random1 = Randomizer.create(seed);
+					let random2 = Randomizer.create(seed);
+					let randomParagraph1 = random1.paragraphs();
+					let randomParagraph2 = random2.paragraphs();
+					let p1 = randomParagraph1();
+					let p2 = randomParagraph2();
+					should(p1).be.ok();
+					should(p1).equal(p2);
+				});
+
 			});
 
 		});
