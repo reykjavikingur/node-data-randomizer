@@ -1594,6 +1594,227 @@ describe('Randomizer', ()=> {
 
 		});
 
+		describe('.permutations', ()=> {
+
+			describe('given empty list', ()=> {
+				var randomPermutation;
+				beforeEach(()=> {
+					randomPermutation = random.permutations(3, []);
+				});
+				it('should be function', ()=> {
+					should(randomPermutation).be.a.Function();
+				});
+				it('should return empty array', ()=> {
+					should(randomPermutation()).eql([]);
+				});
+			});
+
+			describe('given constant length and non-empty list', ()=> {
+				var list, randomPermutation;
+				beforeEach(()=> {
+					list = ['foo', 'bar', 'baz', 'quux', 'corge'];
+					randomPermutation = random.permutations(3, list);
+				});
+				it('should always return array', ()=> {
+					for (let i = 0; i < 1000; i++) {
+						let r = randomPermutation();
+						should(r).be.an.Array();
+					}
+				});
+				it('should always return array of correct length', ()=> {
+					for (let i = 0; i < 1000; i++) {
+						let r = randomPermutation();
+						should(r.length).equal(3);
+					}
+				});
+				it('should always return array containing items in list', ()=> {
+					for (let i = 0; i < 1000; i++) {
+						let r = randomPermutation();
+						for (let x of r) {
+							should(list).containEql(x);
+						}
+					}
+				});
+				it('should always return array containing distinct items', ()=> {
+					for (let i = 0; i < 1000; i++) {
+						let r = randomPermutation();
+						let len = r.length;
+						for (let j = 0; j < len; j++) {
+							for (let k = 0; k < len; k++) {
+								if (j !== k) {
+									should(r[j]).not.eql(r[k]);
+								}
+							}
+						}
+					}
+				});
+				it('should return different array each time', ()=> {
+					let a = randomPermutation();
+					let b = randomPermutation();
+					should(b).not.eql(a);
+				});
+			});
+
+			describe('given non-empty list and constant count representing full list', ()=> {
+
+				var list, randomPermutation;
+
+				beforeEach(()=> {
+					list = ['foo', 'bar', 'baz', 'quux', 'corge'];
+					randomPermutation = random.permutations(list.length, list);
+				});
+
+				it('should always return array with correct length', ()=> {
+					for (let i = 0; i < 1000; i++) {
+						let x = randomPermutation();
+						should(x.length).equal(list.length);
+					}
+				});
+				it('should always return array containing items from list', ()=> {
+					for (let i = 0; i < 1000; i++) {
+						let x = randomPermutation();
+						for (let item of x) {
+							should(list).containEql(item);
+						}
+					}
+				});
+				it('should always return array containing every item from list', ()=> {
+					for (let i = 0; i < 1000; i++) {
+						let x = randomPermutation();
+						for (let item of list) {
+							should(x).containEql(item);
+						}
+					}
+				});
+				it('should return different values each time', ()=> {
+					let a = randomPermutation();
+					let b = randomPermutation();
+					should(a).not.eql(b);
+				});
+			});
+
+			describe('given non-empty list and constant count greater than list size', ()=> {
+
+				var list, randomPermutation;
+
+				beforeEach(()=> {
+					list = ['foo', 'bar', 'baz', 'quux', 'corge'];
+					randomPermutation = random.permutations(list.length + 1, list);
+				});
+
+				it('should always return array with correct length', ()=> {
+					for (let i = 0; i < 1000; i++) {
+						let x = randomPermutation();
+						should(x.length).equal(list.length);
+					}
+				});
+				it('should always return array containing items from list', ()=> {
+					for (let i = 0; i < 1000; i++) {
+						let x = randomPermutation();
+						for (let item of x) {
+							should(list).containEql(item);
+						}
+					}
+				});
+				it('should always return array containing every item from list', ()=> {
+					for (let i = 0; i < 1000; i++) {
+						let x = randomPermutation();
+						for (let item of list) {
+							should(x).containEql(item);
+						}
+					}
+				});
+			});
+
+			describe('given non-empty list and dynamic count', ()=> {
+
+				var minCount, maxCount, list, randomPermutation;
+
+				beforeEach(()=> {
+					list = ['foo', 'bar', 'baz', 'quux', 'corge'];
+					minCount = 2;
+					maxCount = 4;
+					should(maxCount).be.lessThan(list.length);
+					should(minCount).be.lessThan(maxCount);
+					should(minCount).be.greaterThan(0);
+					count = random.integers(minCount, maxCount);
+					randomPermutation = random.permutations(count, list);
+				});
+
+				it('should always return array with appropriate length', ()=> {
+					for (let i = 0; i < 1000; i++) {
+						let x = randomPermutation();
+						should(x.length).be.greaterThanOrEqual(minCount);
+						should(x.length).be.lessThanOrEqual(maxCount);
+					}
+				});
+				it('should always return array containing items from list', ()=> {
+					for (let i = 0; i < 1000; i++) {
+						let x = randomPermutation();
+						for (let item of x) {
+							should(list).containEql(item);
+						}
+					}
+				});
+				it('should always return array containing distinct items', ()=> {
+					for (let i = 0; i < 1000; i++) {
+						let x = randomPermutation();
+						for (let j in x) {
+							for (let k in x) {
+								if (j !== k) {
+									should(x[j]).not.eql(x[k]);
+								}
+							}
+						}
+					}
+				});
+			});
+
+			describe('consistency', ()=> {
+				var randomA, randomB, randomPermA, randomPermB;
+				beforeEach(()=> {
+					let seed = 'permutations consistency test seed alkdjaf';
+					randomA = Randomizer.create(seed);
+					randomB = Randomizer.create(seed);
+					let count = 3;
+					let list = ['foo', 'bar', 'baz', 'quux', 'corge'];
+					randomPermA = randomA.permutations(count, list);
+					randomPermB = randomB.permutations(count, list);
+				});
+				it('should always have same results for same seed', ()=> {
+					for (let i = 0; i < 1000; i++) {
+						let a = randomPermA();
+						let b = randomPermB();
+						should(a).eql(b);
+					}
+				});
+			});
+
+			describe('grouping', ()=> {
+				var randomA, randomB, randomPermA, randomNumberA, randomNumberB;
+				beforeEach(()=> {
+					let seed = 'permutuations grouping testing seed alc908qw';
+					randomA = Randomizer.create(seed);
+					randomB = Randomizer.create(seed);
+					let count = 3;
+					let list = ['foo', 'bar', 'baz', 'quux', 'corge'];
+					randomPermA = randomA.permutations(count, list);
+					randomNumberA = randomA.numbers(0, 1000);
+					randomNumberB = randomB.numbers(0, 1000);
+				});
+				it('should keep permutation values atomic', ()=> {
+					let a1 = randomNumberA();
+					let b1 = randomNumberB();
+					let a2 = randomPermA();
+					let b2 = randomNumberB();
+					let a3 = randomNumberA();
+					let b3 = randomNumberB();
+					should(b3).equal(a3);
+				});
+			});
+
+		});
+
 	});
 
 });

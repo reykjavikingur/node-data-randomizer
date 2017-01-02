@@ -101,6 +101,12 @@ Creates function that generates object with structure corresponding to `template
 Creates function that generates object with base structure and recursive property that contains list of zero or more similar structures,
 thus forming a tree-like data structure, the shape of which is determined by branch count and depth.
 
+### `permutations(count: Number|Function, list: Array) -> Function`
+
+Creates function that generates array of items from `list` of length given by `count`
+(or the length of `list`, whichever is less).
+Each item in the resulting array will be distinct.
+
 ### `transformations(factories: Array, t: Function) -> Function`
 
 Creates function that invokes all given factories and passes them as arguments to the transform function.
