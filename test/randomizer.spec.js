@@ -1333,6 +1333,35 @@ describe('Randomizer', ()=> {
 
 		});
 
+		describe('.calls', ()=> {
+
+			let randomSquareNumber;
+
+			beforeEach(()=> {
+				let f = (x) => x * x;
+				randomSquareNumber = random.calls(f, random.integers(1, 100));
+			});
+
+			it('should return a function', ()=> {
+				should(randomSquareNumber).be.a.Function();
+			});
+
+			it('should return different value each time', ()=> {
+				let a = randomSquareNumber();
+				let b = randomSquareNumber();
+				should(a).not.equal(b);
+			});
+
+			it('should call the function each time', ()=> {
+				for (let i = 0; i < 1000; i++) {
+					let x = randomSquareNumber();
+					let sqrtX = Math.sqrt(x);
+					should(sqrtX).equal(Math.floor(sqrtX));
+				}
+			})
+
+		});
+
 		describe('.composites', ()=> {
 
 			it('should fail when given no arguments', ()=> {

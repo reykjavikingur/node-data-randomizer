@@ -111,3 +111,8 @@ Each item in the resulting array will be distinct.
 
 Creates function that invokes all given factories and passes them as arguments to the transform function.
 This is useful when you want to define post-processing for some random data.
+
+### `calls(f: Function, randomFactory: Function) -> Function`
+
+Creates function that invokes `randomFactory` and passes the value to `f`.
+This is useful to create a custom factory based on existing factories and a simple transformation.
