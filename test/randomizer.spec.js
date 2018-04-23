@@ -30,6 +30,11 @@ describe('Randomizer', () => {
 				should(random.number(1, 10)).be.a.Function();
 			});
 
+			it('should have return value in generator', () => {
+				var randomNumber = random.number(1, 10);
+				should(randomNumber.generator).equal(randomNumber);
+			});
+
 			it('should fail with no arguments', () => {
 				should(() => random.number()).throwError();
 			});
@@ -279,6 +284,10 @@ describe('Randomizer', () => {
 					should(randomInteger).be.a.Function();
 				});
 
+				it('should have generator', () => {
+					should(randomInteger.generator).equal(randomInteger);
+				});
+
 				it('should always return appropriate values', () => {
 					for (let i = 0; i < 1000; i++) {
 						let x = randomInteger();
@@ -526,6 +535,9 @@ describe('Randomizer', () => {
 				beforeEach(() => {
 					randomBoolean = random.boolean();
 				});
+				it('should have generator set to return value', () => {
+					should(randomBoolean.generator).equal(randomBoolean);
+				});
 				describe('values', () => {
 					var values, numTrials;
 					beforeEach(() => {
@@ -621,6 +633,10 @@ describe('Randomizer', () => {
 				}
 			});
 
+			it('should put generator in return value', () => {
+				should(randomSeed.generator).equal(randomSeed);
+			});
+
 			it('should generate distinct string every time', () => {
 				let values = {}, n = 1000;
 				for (let i = 0; i < n; i++) {
@@ -650,6 +666,10 @@ describe('Randomizer', () => {
 					}
 				});
 
+				it('should set generator to return value', () => {
+					should(randomState.generator).equal(randomState);
+				});
+
 			});
 
 		});
@@ -671,6 +691,10 @@ describe('Randomizer', () => {
 
 				it('should be a function', () => {
 					should(randomAlt).be.a.Function();
+				});
+
+				it('should set generator to return value', () => {
+					should(randomAlt.generator).equal(randomAlt);
 				});
 
 				it('should return appropriate values', () => {
@@ -738,6 +762,10 @@ describe('Randomizer', () => {
 
 				it('should be a function', () => {
 					should(randomArray).be.a.Function();
+				});
+
+				it('should set generator to return value', () => {
+					should(randomArray.generator).equal(randomArray);
 				});
 
 				describe('value', () => {
@@ -831,6 +859,10 @@ describe('Randomizer', () => {
 
 				it('should be a function', () => {
 					should(randomObject).be.a.Function();
+				});
+
+				it('should set generator to return value', () => {
+					should(randomObject.generator).equal(randomObject);
 				});
 
 				describe('returns', () => {
@@ -936,6 +968,10 @@ describe('Randomizer', () => {
 					should(randomPhrase).be.a.Function();
 				});
 
+				it('should set generator to return value', () => {
+					should(randomPhrase.generator).equal(randomPhrase);
+				});
+
 				it('should return a string', () => {
 					should(randomPhrase()).be.a.String();
 				});
@@ -1026,6 +1062,10 @@ describe('Randomizer', () => {
 				should(randomSentence).be.a.Function();
 			});
 
+			it('should set generator to return value', () => {
+				should(randomSentence.generator).equal(randomSentence);
+			});
+
 			it('should generate strings', () => {
 				let sentence = randomSentence();
 				should(sentence).be.a.String();
@@ -1082,6 +1122,10 @@ describe('Randomizer', () => {
 
 			it('should return function', () => {
 				should(randomParagraph).be.a.Function();
+			});
+
+			it('should set generator to return value', () => {
+				should(randomParagraph.generator).equal(randomParagraph);
 			});
 
 			it('should generate strings', () => {
@@ -1169,6 +1213,10 @@ describe('Randomizer', () => {
 
 				it('should return a function', () => {
 					should(randomDate).be.a.Function();
+				});
+
+				it('should set generator to return value', () => {
+					should(randomDate.generator).equal(randomDate);
 				});
 
 				it('should generate Date instances', () => {
@@ -1459,6 +1507,10 @@ describe('Randomizer', () => {
 					should(randomComposite).be.a.Function();
 				});
 
+				it('should set generator to return value', () => {
+					should(randomComposite.generator).equal(randomComposite);
+				});
+
 				describe('return value', () => {
 					var result;
 					beforeEach(() => {
@@ -1632,6 +1684,9 @@ describe('Randomizer', () => {
 				});
 				it('should be function', () => {
 					should(randomPermutation).be.a.Function();
+				});
+				it('should set generator to return value', () => {
+					should(randomPermutation.generator).equal(randomPermutation);
 				});
 				it('should return empty array', () => {
 					should(randomPermutation()).eql([]);
