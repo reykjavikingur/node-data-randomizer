@@ -1438,7 +1438,21 @@ describe('Randomizer', () => {
 					let sqrtX = Math.sqrt(x);
 					should(sqrtX).equal(Math.floor(sqrtX));
 				}
-			})
+			});
+
+			describe('.transform', () => {
+				var random1PlusSquare;
+				beforeEach(() => {
+					random1PlusSquare = randomSquareNumber.transform(x => x + 1);
+				});
+				it('should call the function each time', () => {
+					for (let i = 0; i < 1000; i++) {
+						let y = random1PlusSquare();
+						let x = Math.sqrt(y - 1);
+						should(x).equal(Math.floor(x));
+					}
+				});
+			});
 
 		});
 
