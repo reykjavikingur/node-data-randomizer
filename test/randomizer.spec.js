@@ -575,6 +575,39 @@ describe('Randomizer', () => {
 				});
 			});
 
+			describe('.transform', () => {
+				var randomStatus;
+				beforeEach(() => {
+					randomStatus = random.boolean().transform(x => x ? 'ok' : 'no');
+				});
+				describe('values', () => {
+					var values, numTrials;
+					beforeEach(() => {
+						values = {};
+						numTrials = 1000;
+						for (let i = 0; i < numTrials; i++) {
+							let x = randomStatus();
+							if (!values.hasOwnProperty(x)) {
+								values[x] = 0;
+							}
+							values[x]++;
+						}
+					});
+					it('should sometimes transform true', () => {
+						should(values['ok']).be.greaterThan(0);
+					});
+					it('should sometimes transform false', () => {
+						should(values['no']).be.greaterThan(0);
+					});
+					it('should never transform value other than true or false', () => {
+						should(Object.keys(values).length).eql(2);
+					});
+					it('should have about as many true and false', () => {
+						should(values['ok']).be.approximately(values['no'], numTrials / 10);
+					});
+				});
+			});
+
 			describe('with full bias towards false', () => {
 
 				var randomBoolean;
@@ -1381,13 +1414,12 @@ describe('Randomizer', () => {
 
 		});
 
-		describe('.call', () => {
+		describe('.transform', () => {
 
 			let randomSquareNumber;
 
 			beforeEach(() => {
-				let f = (x) => x * x;
-				randomSquareNumber = random.call(f, random.integer(1, 100));
+				randomSquareNumber = random.integer(1, 100).transform(x => x * x);
 			});
 
 			it('should return a function', () => {
