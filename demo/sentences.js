@@ -6,8 +6,7 @@ var n = 10;
 
 var random = Randomizer.create(seed);
 
-//var randomSentence = random.sentences(random.integers(5, 10));
-var randomSentence = random.sentences();
+var randomSentence = random.sentence();
 
 for (let i = 0; i < n; i++) {
 	console.log(randomSentence());

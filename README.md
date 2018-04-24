@@ -13,9 +13,9 @@ let Randomizer = require('data-randomizer');
 
 let random = Randomizer.create(SEED);
 
-let randomId = random.integers(10000, 20000);
+let randomId = random.integer(10000, 20000);
 
-let randomName = random.phrases(3);
+let randomName = random.phrase(3);
 
 let mockProduct = {
     id: randomId(),
@@ -45,74 +45,67 @@ Instantiates a randomizer.
 
 `let random = Randomizer.create('abc');`
 
-### `numbers(min: Number, max: Number, step?: Number) -> Function`
+### `number(min: Number, max: Number, step?: Number) -> Function`
 
 Creates function that returns numbers between `min` (inclusive) and `max` (exclusive)
 at `step` intervals (default 0).
 
-`let randomHeight = random.numbers(25, 300)`
+`let randomHeight = random.number(25, 300)`
 
-`let randomPrice = random.numbers(0.01, 999.99, 0.01)`
+`let randomPrice = random.number(0.01, 999.99, 0.01)`
 
-### `integers(min: Number, max: Number) -> Function`
+### `integer(min: Number, max: Number) -> Function`
 
 Creates function that returns random integer between `min` (inclusive) and `max` (inclusive).
 
-### `booleans(split?: Number) -> Function`
+### `boolean(split?: Number) -> Function`
 
 Creates function that returns random boolean with `split` probability of being true (default 0.5).
 
-### `phrases(wordCount: Number|Function) -> Function`
+### `phrase(wordCount: Number|Function) -> Function`
 
 Creates function that generates string with given number of words.
 
-### `sentences() -> Function`
+### `sentence() -> Function`
 
 Creates function that generates random string.
 
-### `paragraphs() -> Function`
+### `paragraph() -> Function`
 
 Creates function that generates random paragraph.
 
-### `dates(min: Date, max: Date) -> Function`
+### `date(min: Date, max: Date) -> Function`
 
 Creates function that generates random Date in given range.
 
-### `choices(list: Array) -> Function`
+### `choice(list: Array) -> Function`
 
 Creates function that returns random item from `list`.
 
-### `alternatives(list: Array<Function>) -> Function`
+### `alternative(list: Array<Function>) -> Function`
 
 Creates function that randomly selects from the `list` of functions to invoke.
 This is useful to specify a union of multiple random type constraints.
 
-### `arrays(count: Number|Function, randomItem: Function) -> Function`
+### `array(count: Number|Function, randomItem: Function) -> Function`
 
 Creates function that generates array of random items.
 The count can be a constant number or a function that generates a random number.
 
-### `objects(template: Object) -> Function`
+### `object(template: Object) -> Function`
 
 Creates function that generates object with structure corresponding to `template`.
 
-### `composites(branchCount: Number|Function, depth: Number|Function, recursivePropertyName: String, baseStructure: Object) -> Function`
-
-Creates function that generates object with base structure and recursive property that contains list of zero or more similar structures,
-thus forming a tree-like data structure, the shape of which is determined by branch count and depth.
-
-### `permutations(count: Number|Function, list: Array) -> Function`
+### `permutation(count: Number|Function, list: Array) -> Function`
 
 Creates function that generates array of items from `list` of length given by `count`
 (or the length of `list`, whichever is less).
 Each item in the resulting array will be distinct.
 
-### `transformations(factories: Array, t: Function) -> Function`
+## transform
 
-Creates function that invokes all given factories and passes them as arguments to the transform function.
-This is useful when you want to define post-processing for some random data.
+All random values can be arbitrarily transformed. For example:
 
-### `calls(f: Function, randomFactory: Function) -> Function`
-
-Creates function that invokes `randomFactory` and passes the value to `f`.
-This is useful to create a custom factory based on existing factories and a simple transformation.
+```
+const randomAnswer = random.boolean().transform(b => b ? 'yes' : 'no');
+```

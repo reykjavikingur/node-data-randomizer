@@ -1,13 +1,14 @@
-let random = require('../lib/randomizer').create('Example seed for demo of powers of ten');
+const random = require('../lib/randomizer').create('Example seed for demo of powers of ten');
 
-let randomPowerOfTen = random.transformations([
-	random.integers(1, 9),
-	random.integers(0, 6)
-], (c, x) => {
-	return c * Math.pow(10, x);
-});
+var randomPowerOfTen = random.object({
+	digit: random.integer(1, 9),
+	power: random.integer(0, 6),
+})
+	.transform(r => {
+		return r.digit * Math.pow(10, r.power);
+	});
 
-let n = 25;
+var n = 25;
 
 for (let i = 0; i < n; i++) {
 	console.log(randomPowerOfTen());

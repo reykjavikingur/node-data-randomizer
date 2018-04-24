@@ -4,9 +4,9 @@ var seed = 'Example seed for prices demo 1';
 
 var random = Randomizer.create(seed);
 
-var randomPrice = random.alternatives([
-	random.numbers(0.99, 199.99, 1),
-	random.numbers(0.98, 199.98, 1)
+var randomPrice = random.alternative([
+	random.number(0.99, 199.99, 1),
+	random.number(0.98, 199.98, 1)
 ]);
 
 var n = 25;
